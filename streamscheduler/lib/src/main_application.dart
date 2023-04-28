@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'pages/home_page.dart';
 import 'pages/subscriptions_page.dart';
+import 'package:yt/yt.dart';
+import 'shared_app_state.dart';
+import 'yt_login_generator.dart';
+import 'secrets/secrets.dart';
+
 
 class MainApplication extends StatefulWidget {
   const MainApplication({super.key, required this.title});
@@ -13,11 +19,23 @@ class MainApplication extends StatefulWidget {
 class _MainApplicationState extends State<MainApplication> {
   bool _isExpanded = false;
   var _selectedIndex = 0;
+  late final Yt yt;
 
   void _toggleNavigationBar() {
     setState(() {
       _isExpanded = !_isExpanded;
     });
+  }
+
+  void login() async {
+    yt = await Yt.withGenerator(YtLoginGenerator());
+    // YtLoginGenerator().generate();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    login();
   }
 
   @override
@@ -26,6 +44,10 @@ class _MainApplicationState extends State<MainApplication> {
     final style = theme.textTheme.bodyMedium!.copyWith(
       color: theme.colorScheme.background,
     );
+
+    var sharedState = context.watch<MainAppState>();
+
+    
 
     Widget page;
     switch (_selectedIndex) {
@@ -98,7 +120,9 @@ class _MainApplicationState extends State<MainApplication> {
         ),
 
         floatingActionButton: FloatingActionButton(
-          onPressed: () => print('pressed button'),
+          onPressed: () {
+            print("pressed");
+          },
           tooltip: 'placeholder',
           child: const Icon(Icons.add),
         ),
