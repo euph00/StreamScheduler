@@ -5,6 +5,8 @@ class SubscriptionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Subscriptions page placeholder'),);
+    return Center(
+      child: Text('Subscriptions page placeholder'),
+    );
   }
 }

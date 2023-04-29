@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pages/home_page.dart';
 import 'pages/subscriptions_page.dart';
-import 'shared_app_state.dart';
-import 'secrets/secrets.dart';
-import 'package:googleapis/youtube/v3.dart';
-
+import 'model/shared_app_state.dart';
 
 class MainApplication extends StatefulWidget {
   const MainApplication({super.key, required this.title});
@@ -32,8 +29,7 @@ class _MainApplicationState extends State<MainApplication> {
       color: theme.colorScheme.background,
     );
 
-    var sharedState = context.watch<MainAppState>();
-
+    var sharedState = context.watch<SharedAppState>();
 
     Widget page;
     switch (_selectedIndex) {
@@ -99,25 +95,25 @@ class _MainApplicationState extends State<MainApplication> {
                 ),
               ),
               Expanded(
-                child: Container(child: page,),
+                child: Container(
+                  child: page,
+                ),
               ),
             ],
           ),
         ),
-
         floatingActionButton: Row(
           children: [
             FloatingActionButton(
               onPressed: () {
-                sharedState.login(); //todo
-                
+                sharedState.login();
               },
               tooltip: 'placeholder',
               child: const Icon(Icons.add),
             ),
             FloatingActionButton(
               onPressed: () {
-                sharedState.displaySubscriptions();
+                sharedState.youtubeDataController.displaySubscriptions();
               },
               tooltip: 'placeholder',
               child: const Icon(Icons.subscriptions),
