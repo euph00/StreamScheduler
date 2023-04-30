@@ -15,7 +15,6 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const StreamScheduler());
 
-    // Verify that our counter starts at 0.
     expect(true, true);
   });
 }
