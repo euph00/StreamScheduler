@@ -1,7 +1,8 @@
-import '../secrets/secrets.dart' as secrets;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
 import 'youtube_data_controller.dart';
+
+const String oauthClientId = '294846529496-ijku3ncstb6p7vh0peclqm3kv9tfkgp1.apps.googleusercontent.com';
 
 const List<String> _scopes = <String>[
   'https://www.googleapis.com/auth/youtube',
@@ -9,7 +10,7 @@ const List<String> _scopes = <String>[
 ];
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
-  clientId: secrets.oauthClientId,
+  clientId: oauthClientId,
   scopes: _scopes,
 );
 
