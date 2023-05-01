@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:streamscheduler/src/pages/sign_in_page.dart';
 import 'pages/home_page.dart';
 import 'pages/subscriptions_page.dart';
 import 'model/shared_app_state.dart';
@@ -31,13 +32,22 @@ class _MainApplicationState extends State<MainApplication> {
 
     var sharedState = context.watch<SharedAppState>();
 
-    Widget page;
+    // if not signed in, display sign in screen
+    if (!sharedState.verifyLoginStatus()) {
+      print("not signed in");
+      return const Scaffold(
+        body: SignInPage(),
+      );
+    }
+
+    Widget _page;
     switch (_selectedIndex) {
       case 0:
-        page = HomePage();
+        _page = HomePage();
         break;
       case 1:
-        page = SubscriptionsPage();
+        print(sharedState.subscriptions.length);
+        _page = SubscriptionsPage();
         break;
       default:
         throw UnimplementedError('no widget for $_selectedIndex');
@@ -89,6 +99,9 @@ class _MainApplicationState extends State<MainApplication> {
                   selectedIndex: _selectedIndex,
                   onDestinationSelected: (value) {
                     setState(() {
+                      if (value == 1 && sharedState.subscriptions.isEmpty) {
+                        sharedState.updateSubscriptions();
+                      }
                       _selectedIndex = value;
                     });
                   },
@@ -96,7 +109,7 @@ class _MainApplicationState extends State<MainApplication> {
               ),
               Expanded(
                 child: Container(
-                  child: page,
+                  child: _page,
                 ),
               ),
             ],
@@ -106,17 +119,10 @@ class _MainApplicationState extends State<MainApplication> {
           children: [
             FloatingActionButton(
               onPressed: () {
-                sharedState.login();
+                sharedState.updateSubscriptions();
               },
               tooltip: 'placeholder',
-              child: const Icon(Icons.add),
-            ),
-            FloatingActionButton(
-              onPressed: () {
-                sharedState.youtubeDataController.displaySubscriptions();
-              },
-              tooltip: 'placeholder',
-              child: const Icon(Icons.subscriptions),
+              child: const Icon(Icons.refresh),
             ),
           ],
         ),

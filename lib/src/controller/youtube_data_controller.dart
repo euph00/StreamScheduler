@@ -5,6 +5,7 @@ import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sig
 class YoutubeDataController {
   YouTubeApi? youTubeApi;
   SignInController? signInController;
+  late final String _id;
   static final YoutubeDataController _singletonInstance =
       YoutubeDataController._internal();
 
@@ -18,6 +19,7 @@ class YoutubeDataController {
         (await signInController.getGsiInstance().authenticatedClient())!;
     youTubeApi = YouTubeApi(httpClient);
     this.signInController = signInController;
+    _id = (await youTubeApi!.channels.list(['id'], mine: true)).items![0].id!;
   }
 
   void clearCredentials() {
@@ -25,22 +27,20 @@ class YoutubeDataController {
     signInController = null;
   }
 
-  void displaySubscriptions() async {
+  Future<List<Subscription>> getSubscriptions() async {
     if (signInController == null) {
       print('NOT SIGNED IN');
     }
-    if (!signInController!.getAuthStatus()) {
-      print("NOT AUTHORISED");
-      return;
+    var subs = <Subscription>[];
+    var response = (await youTubeApi!.subscriptions
+            .list(['snippet'], channelId: _id, maxResults: 50));
+    for (int i = 0; i < 10; i++) { //currently support up to 500 subbed channels, due to api quotas
+      for (var item in response.items!) {
+        subs.add(item);
+      }
+      if (response.nextPageToken == null) break;
+      response = (await youTubeApi!.subscriptions.list(['snippet'], channelId: _id, maxResults: 50, pageToken: response.nextPageToken));
     }
-    String? id = (await youTubeApi!.channels.list(["id"], mine: true))
-        .items![0]
-        .id; // get own channel id
-    var subs = (await youTubeApi!.subscriptions
-            .list(['snippet'], channelId: id, maxResults: 50))
-        .items!; // list subs
-    for (var item in subs) {
-      print(item.snippet!.title);
-    }
+    return subs;
   }
 }

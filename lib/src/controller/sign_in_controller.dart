@@ -47,8 +47,8 @@ class SignInController {
   }
 
   // Logs the user in, and also initialises the YoutubeDataController instance.
-  void login() {
-    _googleSignIn
+  Future<void> login() async {
+    return await _googleSignIn
         .signInSilently()
         .then((value) => _handleCreds())
         .then((value) => YoutubeDataController().initialiseYoutubeApi(this));
