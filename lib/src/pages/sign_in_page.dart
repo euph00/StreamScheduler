@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 import '../model/shared_app_state.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +20,7 @@ class SignInPage extends StatelessWidget {
           SizedBox(height: 180,),
           Text("Please sign in with Google", style: style,),
           SizedBox(height: 20,),
-          SignInButton(Buttons.GoogleDark, onPressed: () => sharedState.login(),),
+          IconButton(onPressed: () => sharedState.login(), icon: Image.asset('assets/images/btn_google_signin_dark_normal_web@2x.png'), padding: EdgeInsets.zero),
           SizedBox(height: 200,),
           Image.asset('assets/images/developed-with-youtube-sentence-case-dark.png')
         ],
