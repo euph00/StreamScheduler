@@ -17,10 +17,17 @@ class SharedAppState extends ChangeNotifier {
     for (Subscription sub in await youtubeDataController.getSubscriptions()) {
       subscriptions.add(sub);
     }
+    _testFunction();
     notifyListeners();
   }
 
   bool verifyLoginStatus() {
     return signInController.getAuthStatus();
+  }
+
+  void _testFunction() {
+    var sub = subscriptions[1];
+    var channelId = sub.snippet!.resourceId!.channelId!;
+    youtubeDataController.test(channelId);
   }
 }

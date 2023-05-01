@@ -14,17 +14,30 @@ class SignInPage extends StatelessWidget {
       color: theme.colorScheme.secondary,
     );
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 180,),
-          Text("Please sign in with Google", style: style,),
-          SizedBox(height: 20,),
-          IconButton(onPressed: () => sharedState.login(), icon: Image.asset('assets/images/btn_google_signin_dark_normal_web@2x.png'), padding: EdgeInsets.zero),
-          SizedBox(height: 200,),
-          Image.asset('assets/images/developed-with-youtube-sentence-case-dark.png')
-        ],
-      )
-    );
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: 180,
+        ),
+        Text(
+          "Please sign in with Google",
+          style: style,
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        IconButton(
+            onPressed: () => sharedState.login(),
+            icon: Image.asset(
+                'assets/images/btn_google_signin_dark_normal_web@2x.png'),
+            padding: EdgeInsets.zero),
+        SizedBox(
+          height: 200,
+        ),
+        Image.asset(
+            'assets/images/developed-with-youtube-sentence-case-dark.png')
+      ],
+    ));
   }
 }

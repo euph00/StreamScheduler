@@ -33,14 +33,29 @@ class YoutubeDataController {
     }
     var subs = <Subscription>[];
     var response = (await youTubeApi!.subscriptions
-            .list(['snippet'], channelId: _id, maxResults: 50));
-    for (int i = 0; i < 10; i++) { //currently support up to 500 subbed channels, due to api quotas
+        .list(['snippet', 'contentDetails'], channelId: _id, maxResults: 50));
+    for (int i = 0; i < 10; i++) {
+      //currently support up to 500 subbed channels, due to api quotas
       for (var item in response.items!) {
         subs.add(item);
       }
       if (response.nextPageToken == null) break;
-      response = (await youTubeApi!.subscriptions.list(['snippet'], channelId: _id, maxResults: 50, pageToken: response.nextPageToken));
+      response = (await youTubeApi!.subscriptions.list(['snippet'],
+          channelId: _id, maxResults: 50, pageToken: response.nextPageToken));
     }
     return subs;
+  }
+
+  void test(String channelId) async {
+    channelId = 'UC6eWCld0KwmyHFbAqK3V-Rw'; //koyori's channel id, since she has streams scheduled. this is for testing.
+    print(channelId);
+    Channel ch = (await youTubeApi!.channels.list(['snippet', 'contentDetails'], id: [channelId])).items![0];
+    print(ch.snippet!.title);
+    String playlistId = ch.contentDetails!.relatedPlaylists!.uploads!;
+    print(playlistId);
+    List<PlaylistItem> items = (await youTubeApi!.playlistItems.list(['snippet'], playlistId: playlistId)).items!;
+    for (PlaylistItem item in items) {
+      print(item.snippet!.title);
+    }
   }
 }
