@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../model/shared_app_state.dart';
 import 'package:googleapis/youtube/v3.dart';
+import 'package:mobx/mobx.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import '../model/subscription_item.dart';
 
 class SubscriptionsPage extends StatelessWidget {
   const SubscriptionsPage({super.key});
@@ -12,16 +15,21 @@ class SubscriptionsPage extends StatelessWidget {
 
     return Column(
       children: [
-        Text("no. entries: ${sharedState.subscriptions.length}"),
+        Observer(builder: (_) => Text("no. entries: ${sharedState.subscriptions.length}")),
         Expanded(
           child: Row(
             children: [
               Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 5,
-                    crossAxisSpacing: 4.0,
-                    mainAxisSpacing: 8.0,
-                    children: sharedState.subscriptions.map((e) => SubscriptionCard(subscription: e)).toList(),
+                  child: Observer(
+                    builder: (_) => GridView.builder(
+                      itemCount: sharedState.subscriptions.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 5, 
+                        crossAxisSpacing: 4.0, 
+                        mainAxisSpacing: 8.0), 
+                      itemBuilder: (context, index) {
+                        return SubscriptionCard(subscription: sharedState.subscriptions[index]);
+                    },),
                     )
                   ),
               ElevatedButton(
@@ -37,14 +45,19 @@ class SubscriptionsPage extends StatelessWidget {
   }
 }
 
-class SubscriptionCard extends StatelessWidget {
+class SubscriptionCard extends StatefulWidget {
   const SubscriptionCard({
     super.key,
     required this.subscription,
   });
 
-  final Subscription subscription;
+  final SubscriptionItem subscription;
 
+  @override
+  State<SubscriptionCard> createState() => _SubscriptionCardState();
+}
+
+class _SubscriptionCardState extends State<SubscriptionCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -63,11 +76,18 @@ class SubscriptionCard extends StatelessWidget {
           padding: const EdgeInsets.all(5.0),
           child: Column(
             children: [
-              Expanded(child: Image.network(subscription.snippet!.thumbnails!.medium!.url!,)),
+              Expanded(child: Image.network(widget.subscription.getThumbnailUrl(),)),
               const SizedBox(height: 10,),
-              Text(
-                subscription.snippet!.title!,
-                style: style,
+              Row(
+                children: [
+                  Checkbox(value: widget.subscription.isChecked, onChanged: (checkStatus) {setState(() => {widget.subscription.setCheck(checkStatus!)});}),
+                  Flexible(
+                    child: Text(
+                      widget.subscription.getChannelTitle(),
+                      style: style,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
