@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:googleapis/youtube/v3.dart';
 import 'package:streamscheduler/src/model/channel_item.dart';
 import 'sign_in_controller.dart';
@@ -9,6 +11,9 @@ class YoutubeDataController {
   late final String _id;
   static final YoutubeDataController _singletonInstance =
       YoutubeDataController._internal();
+
+  static const int maxQueryBatchSize = 50;
+  static const int perChannelQueryDepth = 20;
 
   factory YoutubeDataController() {
     return _singletonInstance;
@@ -33,8 +38,9 @@ class YoutubeDataController {
       print('NOT SIGNED IN');
     }
     var subs = <Subscription>[];
-    var response = (await youTubeApi!.subscriptions
-        .list(['snippet', 'contentDetails'], channelId: _id, maxResults: 50));
+    var response = (await youTubeApi!.subscriptions.list(
+        ['snippet', 'contentDetails'],
+        channelId: _id, maxResults: maxQueryBatchSize));
     for (int i = 0; i < 10; i++) {
       //currently support up to 500 subbed channels, due to api quotas
       for (var item in response.items!) {
@@ -42,7 +48,9 @@ class YoutubeDataController {
       }
       if (response.nextPageToken == null) break;
       response = (await youTubeApi!.subscriptions.list(['snippet'],
-          channelId: _id, maxResults: 50, pageToken: response.nextPageToken));
+          channelId: _id,
+          maxResults: maxQueryBatchSize,
+          pageToken: response.nextPageToken));
     }
     return subs;
   }
@@ -53,26 +61,34 @@ class YoutubeDataController {
         .items!;
   }
 
-  Future<List<PlaylistItem>> getChannelUploadsPlaylistItems(ChannelItem channel) async {
-    // gets top 5 items from the playlist, as most likely all livestreams/
-    // waiting rooms are in the top 5 items. API quota consideration.
+  Future<List<PlaylistItem>> getChannelUploadsPlaylistItems(
+      ChannelItem channel) async {
+    // gets top perChannelQueryDepth items from the playlist, as most likely all livestreams/
+    // waiting rooms are in the top n items. API quota consideration.
     String uploadsPlaylistId = channel.getUploadsPlaylistId();
-    return (await youTubeApi!.playlistItems.list(['snippet'], playlistId: uploadsPlaylistId)).items!;
+    return (await youTubeApi!.playlistItems.list(['snippet'],
+            maxResults: perChannelQueryDepth, playlistId: uploadsPlaylistId))
+        .items!;
   }
 
   Future<List<Video>> getVideosFromVideoIds(List<String> videoIds) async {
     List<Video> videos = <Video>[];
-    VideoListResponse response = await youTubeApi!.videos.list(['snippet', 'id', 'liveStreamingDetails'], id: videoIds);
-    if (response.items == null) return videos;
-    videos.addAll(response.items!);
-    while (response.nextPageToken != null) {
-      response = await youTubeApi!.videos.list(['snippet', 'id', 'liveStreamingDetails'], id: videoIds, pageToken: response.nextPageToken);
+    int queryEnd = min(maxQueryBatchSize, videoIds.length);
+    int queryStart = 0;
+    while (queryEnd <= videoIds.length) {
+      List<String> queryList = videoIds.sublist(queryStart, queryEnd);
+      VideoListResponse response = await youTubeApi!.videos
+          .list(['snippet', 'id', 'liveStreamingDetails'], id: queryList);
       videos.addAll(response.items!);
+      if (queryEnd == videoIds.length) {
+        break;
+      }
+      queryStart += maxQueryBatchSize;
+      queryEnd = min(queryEnd + maxQueryBatchSize, videoIds.length);
     }
+    print(videos.length);
     return videos;
   }
-
-
 
   void test(String channelId) async {
     channelId =

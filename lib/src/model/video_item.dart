@@ -22,4 +22,8 @@ class VideoItem {
   String getChannelId() {
     return vid.snippet!.channelId!;
   }
+
+  String getThumbnailUrl() {
+    return vid.snippet!.thumbnails!.medium!.url!;
+  }
 }

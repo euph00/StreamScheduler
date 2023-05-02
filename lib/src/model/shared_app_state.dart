@@ -14,9 +14,12 @@ class SharedAppState extends ChangeNotifier {
   final YoutubeDataController youtubeDataController = YoutubeDataController();
   final ObservableList<SubscriptionItem> subscriptions =
       ObservableList<SubscriptionItem>.of(<SubscriptionItem>[]);
-  final HashSet<ChannelItem> _trackedChannels = HashSet<ChannelItem>.from(<ChannelItem>[]);
-  final ObservableList<BroadcastItem> liveStreams = ObservableList.of(<BroadcastItem>[]);
-  final ObservableList<BroadcastItem> upcomingStreams = ObservableList.of(<BroadcastItem>[]);
+  final HashSet<ChannelItem> _trackedChannels =
+      HashSet<ChannelItem>.from(<ChannelItem>[]);
+  final ObservableList<BroadcastItem> liveStreams =
+      ObservableList.of(<BroadcastItem>[]);
+  final ObservableList<BroadcastItem> upcomingStreams =
+      ObservableList.of(<BroadcastItem>[]);
 
   // Login
 
@@ -45,8 +48,9 @@ class SharedAppState extends ChangeNotifier {
         .where((item) => item.isChecked)
         .map((item) => item.getChannelId())
         .toList();
-    _trackedChannels
-        .addAll((await youtubeDataController.getChannelListFromIds(ids)).map((e) => ChannelItem(ch: e)));
+    _trackedChannels.addAll(
+        (await youtubeDataController.getChannelListFromIds(ids))
+            .map((e) => ChannelItem(ch: e)));
     print(_trackedChannels.map((e) => e.getChannelTitle()));
     updateVideoLists();
   }
@@ -59,22 +63,22 @@ class SharedAppState extends ChangeNotifier {
     upcomingStreams.clear();
     List<String> videoIds = <String>[];
     for (ChannelItem channel in _trackedChannels) {
-      videoIds.addAll((await youtubeDataController.getChannelUploadsPlaylistItems(channel)).map((e) => e.snippet!.resourceId!.videoId!));
+      videoIds.addAll(
+          (await youtubeDataController.getChannelUploadsPlaylistItems(channel))
+              .map((e) => e.snippet!.resourceId!.videoId!));
     }
-    List<VideoItem> videos = (await youtubeDataController.getVideosFromVideoIds(videoIds)).map((e) => VideoItem(vid: e)).toList();
-    for (VideoItem video in videos) {
-      String broadcastStatus = video.getLiveBroadcastContent();
-      if (broadcastStatus == 'live') {
-        liveStreams.add(BroadcastItem(vid: video.vid));
-      } else if (broadcastStatus == 'upcoming') {
-        upcomingStreams.add(BroadcastItem(vid: video.vid));
-      } else if (broadcastStatus == 'none') {
-        continue;
-      } else {
-        print("this video has unusual status $broadcastStatus: ${video.getVideoTitle()}");
-        continue;
-      }
-    }
+    List<VideoItem> videos =
+        (await youtubeDataController.getVideosFromVideoIds(videoIds))
+            .map((e) => VideoItem(vid: e))
+            .toList();
+    liveStreams.addAll(await Stream.fromIterable(videos)
+        .where((video) => video.getLiveBroadcastContent() == 'live')
+        .map((video) => BroadcastItem(vid: video.vid))
+        .toList());
+    upcomingStreams.addAll(await Stream.fromIterable(videos)
+        .where((video) => video.getLiveBroadcastContent() == 'upcoming')
+        .map((video) => BroadcastItem(vid: video.vid))
+        .toList());
 
     print("__________________________LIVE__________________________");
     for (BroadcastItem item in liveStreams) {
