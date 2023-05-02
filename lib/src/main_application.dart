@@ -46,7 +46,6 @@ class _MainApplicationState extends State<MainApplication> {
         _page = HomePage();
         break;
       case 1:
-        print(sharedState.subscriptions.length);
         _page = SubscriptionsPage();
         break;
       default:
