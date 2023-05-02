@@ -1,4 +1,5 @@
 import 'package:googleapis/youtube/v3.dart';
+import 'package:streamscheduler/src/model/channel_item.dart';
 import 'sign_in_controller.dart';
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 
@@ -46,14 +47,46 @@ class YoutubeDataController {
     return subs;
   }
 
+  Future<List<Channel>> getChannelListFromIds(List<String> ids) async {
+    return (await youTubeApi!.channels
+            .list(['snippet', 'contentDetails'], id: ids))
+        .items!;
+  }
+
+  Future<List<PlaylistItem>> getChannelUploadsPlaylistItems(ChannelItem channel) async {
+    // gets top 5 items from the playlist, as most likely all livestreams/
+    // waiting rooms are in the top 5 items. API quota consideration.
+    String uploadsPlaylistId = channel.getUploadsPlaylistId();
+    return (await youTubeApi!.playlistItems.list(['snippet'], playlistId: uploadsPlaylistId)).items!;
+  }
+
+  Future<List<Video>> getVideosFromVideoIds(List<String> videoIds) async {
+    List<Video> videos = <Video>[];
+    VideoListResponse response = await youTubeApi!.videos.list(['snippet', 'id', 'liveStreamingDetails'], id: videoIds);
+    if (response.items == null) return videos;
+    videos.addAll(response.items!);
+    while (response.nextPageToken != null) {
+      response = await youTubeApi!.videos.list(['snippet', 'id', 'liveStreamingDetails'], id: videoIds, pageToken: response.nextPageToken);
+      videos.addAll(response.items!);
+    }
+    return videos;
+  }
+
+
+
   void test(String channelId) async {
-    channelId = 'UC6eWCld0KwmyHFbAqK3V-Rw'; //koyori's channel id, since she has streams scheduled. this is for testing.
+    channelId =
+        'UC6eWCld0KwmyHFbAqK3V-Rw'; //koyori's channel id, since she has streams scheduled. this is for testing.
     print(channelId);
-    Channel ch = (await youTubeApi!.channels.list(['snippet', 'contentDetails'], id: [channelId])).items![0];
+    Channel ch = (await youTubeApi!.channels
+            .list(['snippet', 'contentDetails'], id: [channelId]))
+        .items![0];
     print(ch.snippet!.title);
     String playlistId = ch.contentDetails!.relatedPlaylists!.uploads!;
     print(playlistId);
-    List<PlaylistItem> items = (await youTubeApi!.playlistItems.list(['snippet'], playlistId: playlistId)).items!;
+    List<PlaylistItem> items = (await youTubeApi!.playlistItems
+            .list(['snippet'], playlistId: playlistId))
+        .items!;
     for (PlaylistItem item in items) {
       print(item.snippet!.title);
     }

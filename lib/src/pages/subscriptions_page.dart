@@ -15,23 +15,26 @@ class SubscriptionsPage extends StatelessWidget {
 
     return Column(
       children: [
-        Observer(builder: (_) => Text("no. entries: ${sharedState.subscriptions.length}")),
+        Observer(
+            builder: (_) =>
+                Text("no. entries: ${sharedState.subscriptions.length}")),
         Expanded(
           child: Row(
             children: [
               Expanded(
                   child: Observer(
-                    builder: (_) => GridView.builder(
-                      itemCount: sharedState.subscriptions.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 5, 
-                        crossAxisSpacing: 4.0, 
-                        mainAxisSpacing: 8.0), 
-                      itemBuilder: (context, index) {
-                        return SubscriptionCard(subscription: sharedState.subscriptions[index]);
-                    },),
-                    )
-                  ),
+                builder: (_) => GridView.builder(
+                  itemCount: sharedState.subscriptions.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5,
+                      crossAxisSpacing: 4.0,
+                      mainAxisSpacing: 8.0),
+                  itemBuilder: (context, index) {
+                    return SubscriptionCard(
+                        subscription: sharedState.subscriptions[index]);
+                  },
+                ),
+              )),
               ElevatedButton(
                   onPressed: () {
                     sharedState.updateSubscriptions();
@@ -67,20 +70,29 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
 
     return Card(
         shape: const RoundedRectangleBorder(
-          side: BorderSide(
-            color: Colors.black,
-          )
-        ),
+            side: BorderSide(
+          color: Colors.black,
+        )),
         color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Column(
             children: [
-              Expanded(child: Image.network(widget.subscription.getThumbnailUrl(),)),
-              const SizedBox(height: 10,),
+              Expanded(
+                  child: Image.network(
+                widget.subscription.getThumbnailUrl(),
+              )),
+              const SizedBox(
+                height: 10,
+              ),
               Row(
                 children: [
-                  Checkbox(value: widget.subscription.isChecked, onChanged: (checkStatus) {setState(() => {widget.subscription.setCheck(checkStatus!)});}),
+                  Checkbox(
+                      value: widget.subscription.isChecked,
+                      onChanged: (checkStatus) {
+                        setState(
+                            () => {widget.subscription.setCheck(checkStatus!)});
+                      }),
                   Flexible(
                     child: Text(
                       widget.subscription.getChannelTitle(),

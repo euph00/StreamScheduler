@@ -1,8 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:googleapis/youtube/v3.dart';
-import '../controller/sign_in_controller.dart';
-import '../controller/youtube_data_controller.dart';
-import 'package:mobx/mobx.dart';
 
 class SubscriptionItem {
   SubscriptionItem({
