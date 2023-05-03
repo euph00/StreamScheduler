@@ -48,6 +48,7 @@ class SharedAppState extends ChangeNotifier {
         .where((item) => item.isChecked)
         .map((item) => item.getChannelId())
         .toList();
+    if (ids.isEmpty) return updateVideoLists(); //break, do not call api
     _trackedChannels.addAll(
         (await youtubeDataController.getChannelListFromIds(ids))
             .map((e) => ChannelItem(ch: e)));
@@ -61,6 +62,7 @@ class SharedAppState extends ChangeNotifier {
     // change to selectively update set with diff only in the future
     liveStreams.clear();
     upcomingStreams.clear();
+    if (_trackedChannels.isEmpty) return;
     List<String> videoIds = <String>[];
     for (ChannelItem channel in _trackedChannels) {
       videoIds.addAll(
@@ -88,11 +90,5 @@ class SharedAppState extends ChangeNotifier {
     for (BroadcastItem item in upcomingStreams) {
       print(item.getVideoTitle());
     }
-  }
-
-  void _testFunction() {
-    var sub = subscriptions[1];
-    var channelId = sub.getChannelId();
-    youtubeDataController.test(channelId);
   }
 }

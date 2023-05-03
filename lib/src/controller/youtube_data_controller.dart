@@ -73,6 +73,7 @@ class YoutubeDataController {
 
   Future<List<Video>> getVideosFromVideoIds(List<String> videoIds) async {
     List<Video> videos = <Video>[];
+    if (videoIds.isEmpty) return Future(() => videos);
     int queryEnd = min(maxQueryBatchSize, videoIds.length);
     int queryStart = 0;
     while (queryEnd <= videoIds.length) {
@@ -88,23 +89,5 @@ class YoutubeDataController {
     }
     print(videos.length);
     return videos;
-  }
-
-  void test(String channelId) async {
-    channelId =
-        'UC6eWCld0KwmyHFbAqK3V-Rw'; //koyori's channel id, since she has streams scheduled. this is for testing.
-    print(channelId);
-    Channel ch = (await youTubeApi!.channels
-            .list(['snippet', 'contentDetails'], id: [channelId]))
-        .items![0];
-    print(ch.snippet!.title);
-    String playlistId = ch.contentDetails!.relatedPlaylists!.uploads!;
-    print(playlistId);
-    List<PlaylistItem> items = (await youTubeApi!.playlistItems
-            .list(['snippet'], playlistId: playlistId))
-        .items!;
-    for (PlaylistItem item in items) {
-      print(item.snippet!.title);
-    }
   }
 }
