@@ -4,6 +4,8 @@ import 'package:streamscheduler/src/pages/sign_in_page.dart';
 import 'pages/home_page.dart';
 import 'pages/subscriptions_page.dart';
 import 'model/shared_app_state.dart';
+import 'pages/upcoming_page.dart';
+import 'pages/live_page.dart';
 
 class MainApplication extends StatefulWidget {
   const MainApplication({super.key, required this.title});
@@ -48,6 +50,12 @@ class _MainApplicationState extends State<MainApplication> {
       case 1:
         _page = SubscriptionsPage();
         break;
+      case 2:
+        _page = UpcomingPage();
+        break;
+      case 3:
+        _page = LivePage();
+        break;
       default:
         throw UnimplementedError('no widget for $_selectedIndex');
     }
@@ -71,7 +79,7 @@ class _MainApplicationState extends State<MainApplication> {
                   minExtendedWidth: 200,
                   backgroundColor: theme.colorScheme.onBackground,
                   destinations: [
-                    NavigationRailDestination(
+                    NavigationRailDestination( //index 0
                         icon: Icon(
                           Icons.home_outlined,
                           color: theme.colorScheme.background,
@@ -84,7 +92,7 @@ class _MainApplicationState extends State<MainApplication> {
                           "Home",
                           style: style,
                         )),
-                    NavigationRailDestination(
+                    NavigationRailDestination( //index 1
                         icon: Icon(
                           Icons.subscriptions_outlined,
                           color: theme.colorScheme.background,
@@ -94,6 +102,26 @@ class _MainApplicationState extends State<MainApplication> {
                           color: theme.colorScheme.onBackground,
                         ),
                         label: Text("Subscriptions", style: style)),
+                    NavigationRailDestination( //index 2
+                        icon: Icon(
+                          Icons.upcoming_outlined,
+                          color: theme.colorScheme.background,
+                        ),
+                        selectedIcon: Icon(
+                          Icons.upcoming,
+                          color: theme.colorScheme.onBackground,
+                        ),
+                        label: Text("Upcoming", style: style)),
+                    NavigationRailDestination( //index 3
+                        icon: Icon(
+                          Icons.live_tv_outlined,
+                          color: theme.colorScheme.background,
+                        ),
+                        selectedIcon: Icon(
+                          Icons.live_tv,
+                          color: theme.colorScheme.onBackground,
+                        ),
+                        label: Text("Live", style: style)),
                   ],
                   selectedIndex: _selectedIndex,
                   onDestinationSelected: (value) {
