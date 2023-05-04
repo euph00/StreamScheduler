@@ -79,7 +79,8 @@ class _MainApplicationState extends State<MainApplication> {
                   minExtendedWidth: 200,
                   backgroundColor: theme.colorScheme.onBackground,
                   destinations: [
-                    NavigationRailDestination( //index 0
+                    NavigationRailDestination(
+                        //index 0
                         icon: Icon(
                           Icons.home_outlined,
                           color: theme.colorScheme.background,
@@ -92,7 +93,8 @@ class _MainApplicationState extends State<MainApplication> {
                           "Home",
                           style: style,
                         )),
-                    NavigationRailDestination( //index 1
+                    NavigationRailDestination(
+                        //index 1
                         icon: Icon(
                           Icons.subscriptions_outlined,
                           color: theme.colorScheme.background,
@@ -102,7 +104,8 @@ class _MainApplicationState extends State<MainApplication> {
                           color: theme.colorScheme.onBackground,
                         ),
                         label: Text("Subscriptions", style: style)),
-                    NavigationRailDestination( //index 2
+                    NavigationRailDestination(
+                        //index 2
                         icon: Icon(
                           Icons.upcoming_outlined,
                           color: theme.colorScheme.background,
@@ -112,7 +115,8 @@ class _MainApplicationState extends State<MainApplication> {
                           color: theme.colorScheme.onBackground,
                         ),
                         label: Text("Upcoming", style: style)),
-                    NavigationRailDestination( //index 3
+                    NavigationRailDestination(
+                        //index 3
                         icon: Icon(
                           Icons.live_tv_outlined,
                           color: theme.colorScheme.background,
