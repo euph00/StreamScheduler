@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
-import '../../model/broadcast_item.dart';
+import '../../model/subscription_item.dart';
 
-class BroadcastCard extends StatelessWidget {
-  const BroadcastCard({super.key, required this.broadcastItem});
-  final BroadcastItem broadcastItem;
+class SubscriptionCard extends StatefulWidget {
+  const SubscriptionCard({
+    super.key,
+    required this.subscription,
+  });
 
+  final SubscriptionItem subscription;
+
+  @override
+  State<SubscriptionCard> createState() => _SubscriptionCardState();
+}
+
+class _SubscriptionCardState extends State<SubscriptionCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -25,16 +34,22 @@ class BroadcastCard extends StatelessWidget {
             children: [
               Expanded(
                   child: Image.network(
-                broadcastItem.getThumbnailUrl(),
+                widget.subscription.getThumbnailUrl(),
               )),
               const SizedBox(
                 height: 10,
               ),
               Row(
                 children: [
+                  Checkbox(
+                      value: widget.subscription.isChecked,
+                      onChanged: (checkStatus) {
+                        setState(
+                            () => {widget.subscription.setCheck(checkStatus!)});
+                      }),
                   Flexible(
                     child: Text(
-                      broadcastItem.getVideoTitle(),
+                      widget.subscription.getChannelTitle(),
                       style: style,
                     ),
                   ),
