@@ -4,3 +4,6 @@ Flutter/Dart application that seeks to improve the livestream tracking functiona
 Currently supported platforms: Web\
 Planned support platforms: iOS, Android\
 Will not support: Windows, macOS
+
+Testing site is hosted at https://euph00.github.io/StreamScheduler/
+Only authorised users are able to test the app currently.
