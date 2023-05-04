@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../model/broadcast_item.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class LiveCard extends StatelessWidget {
   const LiveCard({super.key, required this.broadcastItem});
@@ -11,13 +12,11 @@ class LiveCard extends StatelessWidget {
     final headerStyle = theme.textTheme.bodyLarge!.copyWith(
       color: Colors.black,
     );
-    final bodyStyle = theme.textTheme.bodyMedium!.copyWith(
+    final bodyStyle = theme.textTheme.bodyLarge!.copyWith(
       color: Colors.black,
     );
 
     return 
-        Column(
-          children: [
             Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -35,22 +34,19 @@ class LiveCard extends StatelessWidget {
                       )),
                       Flexible(
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(broadcastItem.getChannelTitle()),
-                            Text('____________________Title____________________', style: headerStyle,),
-                            Text(
-                            broadcastItem.getVideoTitle(),
-                            style: bodyStyle,
-                            ),
-                            Text('____________________Started____________________', style: headerStyle,),
-                            Text('${broadcastItem.getActualStartTime().toLocal()}')
+                            AutoSizeText(broadcastItem.getChannelTitle(), style: bodyStyle, maxLines: 1, minFontSize: 10,),
+                            const Divider(),
+                            AutoSizeText(broadcastItem.getVideoTitle(), style: bodyStyle, maxLines: 2, minFontSize: 10,),
+                            const Divider(),
+                            AutoSizeText('Started at: ${broadcastItem.getActualStartTime().toLocal()}', maxLines: 1, minFontSize: 10,)
                           ],
                         ),
                       ),
                     ],
                   ),
-                )),
-          ],
-        );
+                ));
+
   }
 }

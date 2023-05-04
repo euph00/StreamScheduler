@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../model/subscription_item.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class SubscriptionCard extends StatefulWidget {
   const SubscriptionCard({
@@ -17,7 +18,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final style = theme.textTheme.bodyMedium!.copyWith(
+    final style = theme.textTheme.bodyLarge!.copyWith(
       color: Colors.black,
     );
 
@@ -48,9 +49,11 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                             () => {widget.subscription.setCheck(checkStatus!)});
                       }),
                   Flexible(
-                    child: Text(
+                    child: AutoSizeText(
                       widget.subscription.getChannelTitle(),
                       style: style,
+                      minFontSize: 12,
+                      maxLines: 1,
                     ),
                   ),
                 ],

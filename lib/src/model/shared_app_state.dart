@@ -60,8 +60,8 @@ class SharedAppState extends ChangeNotifier {
 
   void updateVideoLists() async {
     // change to selectively update set with diff only in the future
-    liveStreams.clear();
-    upcomingStreams.clear();
+    // liveStreams.clear();
+    // upcomingStreams.clear();
     if (_trackedChannels.isEmpty) return;
     List<String> videoIds = <String>[];
     for (ChannelItem channel in _trackedChannels) {

@@ -39,7 +39,8 @@ class LivePage extends StatelessWidget {
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: (screenWidth/logicalPixelWidthPerCard).ceil(),
                       crossAxisSpacing: 4.0,
-                      mainAxisSpacing: 8.0),
+                      mainAxisSpacing: 8.0,
+                      childAspectRatio: 3),
                   children: sharedState.liveStreams.map((element) => LiveCard(broadcastItem: element)).toList(),
                 ),
               )),
