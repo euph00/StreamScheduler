@@ -6,6 +6,8 @@ import 'components/broadcast_card.dart';
 
 class LivePage extends StatelessWidget {
   const LivePage({super.key});
+  static const int logicalPixelWidthPerCard = 300;
+
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +16,8 @@ class LivePage extends StatelessWidget {
     final style = theme.textTheme.bodyMedium!.copyWith(
       color: Colors.black,
     );
+    double screenWidth = MediaQuery.of(context).size.width;
+
 
     return Column(
       children: [
@@ -31,8 +35,8 @@ class LivePage extends StatelessWidget {
               Expanded(
                   child: Observer(
                 builder: (_) => GridView(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 5,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: (screenWidth/logicalPixelWidthPerCard).ceil(),
                       crossAxisSpacing: 4.0,
                       mainAxisSpacing: 8.0),
                   children: sharedState.liveStreams.map((element) => BroadcastCard(broadcastItem: element)).toList(),
