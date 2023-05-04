@@ -26,8 +26,8 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
             side: const BorderSide(
-          color: Colors.black,
-        )),
+              color: Colors.black,
+            )),
         color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(5.0),

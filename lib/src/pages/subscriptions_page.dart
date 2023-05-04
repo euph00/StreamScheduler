@@ -12,14 +12,14 @@ class SubscriptionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var sharedState = context.watch<SharedAppState>();
     double screenWidth = MediaQuery.of(context).size.width;
-    
+
     return Column(
       children: [
         ElevatedButton(
-                  onPressed: () {
-                    sharedState.updateSubscriptions();
-                  },
-                  child: Text("refresh")),
+            onPressed: () {
+              sharedState.updateSubscriptions();
+            },
+            child: Text("refresh")),
         Observer(
             builder: (_) =>
                 Text("no. entries: ${sharedState.subscriptions.length}")),
@@ -31,7 +31,8 @@ class SubscriptionsPage extends StatelessWidget {
                 builder: (_) => GridView.builder(
                   itemCount: sharedState.subscriptions.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: (screenWidth/logicalPixelWidthPerCard).ceil(),
+                      crossAxisCount:
+                          (screenWidth / logicalPixelWidthPerCard).ceil(),
                       crossAxisSpacing: 4.0,
                       mainAxisSpacing: 8.0),
                   itemBuilder: (context, index) {
@@ -40,7 +41,6 @@ class SubscriptionsPage extends StatelessWidget {
                   },
                 ),
               )),
-              
             ],
           ),
         ),
