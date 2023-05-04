@@ -3,10 +3,11 @@ import 'package:provider/provider.dart';
 import '../model/shared_app_state.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'components/broadcast_card.dart';
+import 'components/live_card.dart';
 
 class LivePage extends StatelessWidget {
   const LivePage({super.key});
-  static const int logicalPixelWidthPerCard = 300;
+  static const int logicalPixelWidthPerCard = 800;
 
 
   @override
@@ -39,7 +40,7 @@ class LivePage extends StatelessWidget {
                       crossAxisCount: (screenWidth/logicalPixelWidthPerCard).ceil(),
                       crossAxisSpacing: 4.0,
                       mainAxisSpacing: 8.0),
-                  children: sharedState.liveStreams.map((element) => BroadcastCard(broadcastItem: element)).toList(),
+                  children: sharedState.liveStreams.map((element) => LiveCard(broadcastItem: element)).toList(),
                 ),
               )),
             ],
