@@ -1,22 +1,34 @@
 import 'package:mobx/mobx.dart';
 
-class SortedObservableList<T> extends ObservableList<T> {
+class FilteredSortedObservableList<T> extends ObservableList<T> {
 
   Comparator<T> comparator = (a, b) => 0; // default comparator: unsorted, all elements equal
+  bool Function(T) filter = (element) => true; // default filter: lets everything through
   
   void setComparator(Comparator<T> comparator) {
     this.comparator = comparator;
     super.sort(comparator);
   }
 
+  void setFilter(bool Function(T) filter) {
+    this.filter = filter;
+    Iterable<T> filtered = super.where(filter);
+    super.clear();
+    this.addAll(filtered);
+  }
+
   @override
   void add(T element) {
+    if (!filter(element)) {
+      return;
+    }
     super.add(element);
     super.sort(comparator);
   }
 
   @override
   void addAll(Iterable<T> iterable) {
+    iterable = iterable.where(filter);
     super.addAll(iterable);
     super.sort(comparator);
   }

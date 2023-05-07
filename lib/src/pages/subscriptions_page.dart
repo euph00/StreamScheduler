@@ -16,15 +16,22 @@ class SubscriptionsPage extends StatelessWidget {
 
     return Column(
       children: [
+        const SizedBox(height: 10,),
         Row(
           children: [
+            const SizedBox(width: 5,),
             ElevatedButton(
                 onPressed: () {
                   sharedState.updateSubscriptions();
                 },
                 child: Text("refresh")),
+            const SizedBox(width: 5),
             const _SortingDropdownButton(),
+            const SizedBox(width: 5),
             const _FilteringDropdownButton(),
+            const SizedBox(width: 5),
+            _SearchTextField(),
+            const SizedBox(width: 5,)
           ],
         ),
         Observer(
@@ -125,17 +132,18 @@ class __FilteringDropdownButtonState extends State<_FilteringDropdownButton> {
         switch (value) {
           case 'No filter':
           sharedState.displayedSubscriptions.clear();
+          sharedState.displayedSubscriptions.setFilter((element) => true); // no filter, allow all elements
           sharedState.displayedSubscriptions.addAll(sharedState.subscriptions);
             break;
           case 'Checked':
-            List<SubscriptionItem> checked = sharedState.subscriptions.where((element) => element.isChecked).toList();
             sharedState.displayedSubscriptions.clear();
-            sharedState.displayedSubscriptions.addAll(checked);
+            sharedState.displayedSubscriptions.setFilter((element) => element.isChecked);
+            sharedState.displayedSubscriptions.addAll(sharedState.subscriptions);
             break;
           case 'Unchecked':
-            List<SubscriptionItem> unchecked = sharedState.subscriptions.where((element) => !element.isChecked).toList();
             sharedState.displayedSubscriptions.clear();
-            sharedState.displayedSubscriptions.addAll(unchecked);
+            sharedState.displayedSubscriptions.setFilter((element) => !element.isChecked);
+            sharedState.displayedSubscriptions.addAll(sharedState.subscriptions);
             break;
           default:
             throw UnimplementedError("No such option for filtering: $filteringDropdownValue");
@@ -150,6 +158,60 @@ class __FilteringDropdownButtonState extends State<_FilteringDropdownButton> {
           child: Text(value),
         );
       }).toList(),
+    );
+  }
+}
+
+// Widget for searching by channel name
+class _SearchTextField extends StatefulWidget {
+  static const prompt = 'Search for a channel by name...';
+
+  @override
+  State<_SearchTextField> createState() => __SearchTextFieldState();
+}
+
+class __SearchTextFieldState extends State<_SearchTextField> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var sharedState = context.watch<SharedAppState>();
+
+    return Expanded(
+      
+      child: TextField(
+        
+        controller: _controller,
+        onChanged: (String value) {
+          final pattern = RegExp(".*${value.toLowerCase()}.*");
+          Iterable<SubscriptionItem> matching = sharedState.subscriptions.where((element) => pattern.hasMatch(element.getChannelTitle().toLowerCase()));
+          sharedState.displayedSubscriptions.clear();
+          sharedState.displayedSubscriptions.addAll(matching);
+          
+          _controller.value = TextEditingValue(
+            text: value,
+            selection: TextSelection.fromPosition(
+              TextPosition(offset: value.characters.length)
+            )
+          );
+        },
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: _SearchTextField.prompt,
+        ),
+      ),
     );
   }
 }

@@ -8,15 +8,15 @@ import 'subscription_item.dart';
 import 'channel_item.dart';
 import 'video_item.dart';
 import 'broadcast_item.dart';
-import 'sorted_observable_list.dart';
+import 'filtered_sorted_observable_list.dart';
 
 class SharedAppState extends ChangeNotifier {
   final SignInController signInController = SignInController();
   final YoutubeDataController youtubeDataController = YoutubeDataController();
   final ObservableList<SubscriptionItem> subscriptions =
       ObservableList<SubscriptionItem>();
-  final SortedObservableList<SubscriptionItem> displayedSubscriptions = 
-      SortedObservableList<SubscriptionItem>();
+  final FilteredSortedObservableList<SubscriptionItem> displayedSubscriptions = 
+      FilteredSortedObservableList<SubscriptionItem>();
   final HashSet<ChannelItem> _trackedChannels =
       HashSet<ChannelItem>.from(<ChannelItem>[]);
   final ObservableList<BroadcastItem> liveStreams =
