@@ -1,4 +1,5 @@
 import 'package:googleapis/youtube/v3.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SubscriptionItem {
   SubscriptionItem({
@@ -23,5 +24,16 @@ class SubscriptionItem {
 
   String getChannelTitle() {
     return sub.snippet!.title!;
+  }
+
+  String getChannelUrl() {
+    return "https://www.youtube.com/channel/${getChannelId()}";
+  }
+
+  Future<void> launchChannelUrl() async {
+    Uri url = Uri.parse(getChannelUrl());
+    if (!await launchUrl(url)) {
+      throw Exception("Could not launch $url");
+    }
   }
 }

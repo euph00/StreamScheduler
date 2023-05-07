@@ -13,50 +13,53 @@ class UpcomingCard extends StatelessWidget {
       color: Colors.black,
     );
 
-    return Card(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(
-              color: Colors.black,
-            )),
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Row(
-            children: [
-              Expanded(
-                  child: Image.network(
-                broadcastItem.getThumbnailUrl(),
+    return GestureDetector(
+      onDoubleTap: () => broadcastItem.launchVideoUrl(),
+      child: Card(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: const BorderSide(
+                color: Colors.black,
               )),
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AutoSizeText(
-                      broadcastItem.getChannelTitle(),
-                      style: bodyStyle,
-                      maxLines: 1,
-                      minFontSize: 10,
-                    ),
-                    const Divider(),
-                    AutoSizeText(
-                      broadcastItem.getVideoTitle(),
-                      style: bodyStyle,
-                      maxLines: 2,
-                      minFontSize: 10,
-                    ),
-                    const Divider(),
-                    AutoSizeText(
-                      'Scheduled for: ${broadcastItem.getScheduledStartTime().toLocal()}',
-                      style: bodyStyle,
-                      maxLines: 1,
-                      minFontSize: 10,
-                    )
-                  ],
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Image.network(
+                  broadcastItem.getThumbnailUrl(),
+                )),
+                Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AutoSizeText(
+                        broadcastItem.getChannelTitle(),
+                        style: bodyStyle,
+                        maxLines: 1,
+                        minFontSize: 10,
+                      ),
+                      const Divider(),
+                      AutoSizeText(
+                        broadcastItem.getVideoTitle(),
+                        style: bodyStyle,
+                        maxLines: 2,
+                        minFontSize: 10,
+                      ),
+                      const Divider(),
+                      AutoSizeText(
+                        'Scheduled for: ${broadcastItem.getScheduledStartTime().toLocal()}',
+                        style: bodyStyle,
+                        maxLines: 1,
+                        minFontSize: 10,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ));
+              ],
+            ),
+          )),
+    );
   }
 }
