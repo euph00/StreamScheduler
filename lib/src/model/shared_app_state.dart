@@ -8,18 +8,21 @@ import 'subscription_item.dart';
 import 'channel_item.dart';
 import 'video_item.dart';
 import 'broadcast_item.dart';
+import 'sorted_observable_list.dart';
 
 class SharedAppState extends ChangeNotifier {
   final SignInController signInController = SignInController();
   final YoutubeDataController youtubeDataController = YoutubeDataController();
   final ObservableList<SubscriptionItem> subscriptions =
-      ObservableList<SubscriptionItem>.of(<SubscriptionItem>[]);
+      ObservableList<SubscriptionItem>();
+  final SortedObservableList<SubscriptionItem> displayedSubscriptions = 
+      SortedObservableList<SubscriptionItem>();
   final HashSet<ChannelItem> _trackedChannels =
       HashSet<ChannelItem>.from(<ChannelItem>[]);
   final ObservableList<BroadcastItem> liveStreams =
-      ObservableList.of(<BroadcastItem>[]);
+      ObservableList<BroadcastItem>();
   final ObservableList<BroadcastItem> upcomingStreams =
-      ObservableList.of(<BroadcastItem>[]);
+      ObservableList<BroadcastItem>();
 
   // Login
 
@@ -37,6 +40,8 @@ class SharedAppState extends ChangeNotifier {
     subscriptions.clear();
     subscriptions.addAll((await youtubeDataController.getSubscriptions())
         .map((e) => SubscriptionItem(sub: e)));
+    displayedSubscriptions.clear();
+    displayedSubscriptions.addAll(subscriptions); // initialise to display all subs on refresh
   }
 
   // Filtered channels
