@@ -189,16 +189,23 @@ class __SearchTextFieldState extends State<_SearchTextField> {
   Widget build(BuildContext context) {
     var sharedState = context.watch<SharedAppState>();
 
+    void filterForName(String value) {
+      final pattern = RegExp(".*${value.toLowerCase()}.*");
+      Iterable<SubscriptionItem> matching = sharedState.subscriptions.where((element) => pattern.hasMatch(element.getChannelTitle().toLowerCase()));
+      sharedState.displayedSubscriptions.clear();
+      sharedState.displayedSubscriptions.addAll(matching);
+    }
+
     return Expanded(
       
       child: TextField(
         
         controller: _controller,
+        onSubmitted: (value) {
+          filterForName(value);
+        },
         onChanged: (String value) {
-          final pattern = RegExp(".*${value.toLowerCase()}.*");
-          Iterable<SubscriptionItem> matching = sharedState.subscriptions.where((element) => pattern.hasMatch(element.getChannelTitle().toLowerCase()));
-          sharedState.displayedSubscriptions.clear();
-          sharedState.displayedSubscriptions.addAll(matching);
+          filterForName(value);
           
           _controller.value = TextEditingValue(
             text: value,
