@@ -13,6 +13,18 @@ class UpcomingCard extends StatelessWidget {
       color: Colors.black,
     );
 
+    Duration timeTillStart =
+        broadcastItem.getScheduledStartTime().difference(DateTime.now());
+    print(timeTillStart);
+    int timeTillStartH = timeTillStart.isNegative
+        ? -timeTillStart.inHours
+        : timeTillStart.inHours;
+    int timeTillStartM = timeTillStart.isNegative
+        ? -(timeTillStart.inMinutes % 60)
+        : timeTillStart.inMinutes % 60;
+    print(DateTime.now().isBefore(broadcastItem.getScheduledStartTime()));
+    String timeTillStartHM = "$timeTillStartH Hours, $timeTillStartM Minutes";
+
     return GestureDetector(
       onDoubleTap: () => broadcastItem.launchVideoUrl(),
       child: Card(
@@ -53,7 +65,13 @@ class UpcomingCard extends StatelessWidget {
                         style: bodyStyle,
                         maxLines: 1,
                         minFontSize: 10,
-                      )
+                      ),
+                      AutoSizeText(
+                        'Time till start: $timeTillStartHM',
+                        style: bodyStyle,
+                        maxLines: 1,
+                        minFontSize: 10,
+                      ),
                     ],
                   ),
                 ),

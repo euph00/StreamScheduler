@@ -13,6 +13,12 @@ class LiveCard extends StatelessWidget {
       color: Colors.black,
     );
 
+    Duration liveFor =
+        DateTime.now().difference(broadcastItem.getActualStartTime().toLocal());
+    int liveForH = liveFor.inHours;
+    int liveForM = liveFor.inMinutes % 60;
+    String liveForHM = "$liveForH Hours, $liveForM minutes";
+
     return GestureDetector(
       onDoubleTap: () => broadcastItem.launchVideoUrl(),
       child: Card(
@@ -50,6 +56,18 @@ class LiveCard extends StatelessWidget {
                       const Divider(),
                       AutoSizeText(
                         'Started at: ${broadcastItem.getActualStartTime().toLocal()}',
+                        style: bodyStyle,
+                        maxLines: 1,
+                        minFontSize: 10,
+                      ),
+                      AutoSizeText(
+                        'Live for: $liveForHM',
+                        style: bodyStyle,
+                        maxLines: 1,
+                        minFontSize: 10,
+                      ),
+                      AutoSizeText(
+                        'Viewers: ${broadcastItem.getConcurrentViewers()}',
                         style: bodyStyle,
                         maxLines: 1,
                         minFontSize: 10,
