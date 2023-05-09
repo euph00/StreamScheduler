@@ -18,4 +18,15 @@ class ChannelItem {
   String getChannelTitle() {
     return ch.snippet!.title!;
   }
+
+  // Channel ID is guaranteed to be unique.
+  // 2 channels with the same ID must be the same channel.
+  @override
+  int get hashCode => getChannelId().hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return other is ChannelItem &&
+      other.getChannelId() == getChannelId();
+  }
 }

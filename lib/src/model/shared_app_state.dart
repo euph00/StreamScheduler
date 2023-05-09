@@ -13,12 +13,11 @@ import 'filtered_sorted_observable_list.dart';
 class SharedAppState extends ChangeNotifier {
   final SignInController signInController = SignInController();
   final YoutubeDataController youtubeDataController = YoutubeDataController();
-  final ObservableList<SubscriptionItem> subscriptions =
-      ObservableList<SubscriptionItem>();
+  final Set<SubscriptionItem> subscriptions = HashSet<SubscriptionItem>();
   final FilteredSortedObservableList<SubscriptionItem> displayedSubscriptions = 
       FilteredSortedObservableList<SubscriptionItem>();
-  final HashSet<ChannelItem> _trackedChannels =
-      HashSet<ChannelItem>.from(<ChannelItem>[]);
+  final Set<ChannelItem> _trackedChannels =
+      HashSet<ChannelItem>();
   final ObservableList<BroadcastItem> liveStreams =
       ObservableList<BroadcastItem>();
   final ObservableList<BroadcastItem> upcomingStreams =
@@ -37,12 +36,19 @@ class SharedAppState extends ChangeNotifier {
   // Subscriptions
 
   void updateSubscriptions() async {
-    subscriptions.clear();
-    subscriptions.addAll((await youtubeDataController.getSubscriptions())
-        .map((e) => SubscriptionItem(sub: e)));
+
+    Iterable<SubscriptionItem> freshData = (await youtubeDataController.getSubscriptions())
+        .map((e) => SubscriptionItem(sub: e));
+    for (SubscriptionItem item in freshData) {
+      if (!subscriptions.contains(item)) subscriptions.add(item);
+    }
+    Set freshDataSet = HashSet.from(freshData);
+    for (SubscriptionItem item in subscriptions.toList()) {
+      if (!freshDataSet.contains(item)) subscriptions.remove(item);
+      }
     displayedSubscriptions.clear();
-    displayedSubscriptions.addAll(subscriptions); // initialise to display all subs on refresh
-  }
+    displayedSubscriptions.addAll(subscriptions);
+    }
 
   // Filtered channels
 
