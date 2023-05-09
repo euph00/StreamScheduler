@@ -1,6 +1,14 @@
 import 'package:mobx/mobx.dart';
 
 class FilteredSortedObservableList<T> extends ObservableList<T> {
+  FilteredSortedObservableList();
+
+  factory FilteredSortedObservableList.withComparator(Comparator comp) {
+    FilteredSortedObservableList<T> lst = FilteredSortedObservableList<T>();
+    lst.setComparator(comp);
+    return lst;
+  }
+
   Comparator<T> comparator =
       (a, b) => 0; // default comparator: unsorted, all elements equal
   bool Function(T) filter =

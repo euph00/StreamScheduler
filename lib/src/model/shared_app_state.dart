@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import '../controller/sign_in_controller.dart';
 import '../controller/youtube_data_controller.dart';
-import 'package:mobx/mobx.dart';
 import 'subscription_item.dart';
 import 'channel_item.dart';
 import 'video_item.dart';
@@ -17,10 +16,18 @@ class SharedAppState extends ChangeNotifier {
   final FilteredSortedObservableList<SubscriptionItem> displayedSubscriptions =
       FilteredSortedObservableList<SubscriptionItem>();
   final Set<ChannelItem> _trackedChannels = HashSet<ChannelItem>();
-  final ObservableList<BroadcastItem> liveStreams =
-      ObservableList<BroadcastItem>();
-  final ObservableList<BroadcastItem> upcomingStreams =
-      ObservableList<BroadcastItem>();
+  final List<BroadcastItem> liveStreams = <BroadcastItem>[];
+  final FilteredSortedObservableList<BroadcastItem> displayedLiveStreams =
+      FilteredSortedObservableList<BroadcastItem>.withComparator((a, b) => a
+          .getActualStartTime()
+          .compareTo(
+              b.getActualStartTime())); // default early to late comparator
+  final List<BroadcastItem> upcomingStreams = <BroadcastItem>[];
+  final FilteredSortedObservableList<BroadcastItem> displayedUpcomingStreams =
+      FilteredSortedObservableList<BroadcastItem>.withComparator((a, b) => a
+          .getActualStartTime()
+          .compareTo(
+              b.getActualStartTime())); // default early to late comparator
 
   // Login
 
@@ -52,7 +59,6 @@ class SharedAppState extends ChangeNotifier {
   // Filtered channels
 
   void updateTrackedChannels() async {
-    // change to selectively update set with diff only in the future
     _trackedChannels.clear();
     List<String> ids = await Stream.fromIterable(subscriptions)
         .where((item) => item.isChecked)
@@ -69,10 +75,8 @@ class SharedAppState extends ChangeNotifier {
   // Video resources
 
   void updateVideoLists() async {
-    // change to selectively update set with diff only in the future
     liveStreams.clear();
     upcomingStreams.clear();
-    if (_trackedChannels.isEmpty) return;
     List<String> videoIds = <String>[];
     for (ChannelItem channel in _trackedChannels) {
       videoIds.addAll(
@@ -87,10 +91,14 @@ class SharedAppState extends ChangeNotifier {
         .where((video) => video.getLiveBroadcastContent() == 'live')
         .map((video) => BroadcastItem(vid: video.vid))
         .toList());
+    displayedLiveStreams.clear();
+    displayedLiveStreams.addAll(liveStreams);
     upcomingStreams.addAll(await Stream.fromIterable(videos)
         .where((video) => video.getLiveBroadcastContent() == 'upcoming')
         .map((video) => BroadcastItem(vid: video.vid))
         .toList());
+    displayedUpcomingStreams.clear();
+    displayedUpcomingStreams.addAll(upcomingStreams);
 
     print("__________________________LIVE__________________________");
     for (BroadcastItem item in liveStreams) {
