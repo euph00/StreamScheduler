@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import '../controller/sign_in_controller.dart';
 import '../controller/youtube_data_controller.dart';
 import 'subscription_item.dart';
@@ -8,6 +8,7 @@ import 'channel_item.dart';
 import 'video_item.dart';
 import 'broadcast_item.dart';
 import 'filtered_sorted_observable_list.dart';
+import '../../main.dart';
 
 class SharedAppState extends ChangeNotifier {
   final SignInController signInController = SignInController();
@@ -37,6 +38,27 @@ class SharedAppState extends ChangeNotifier {
 
   bool verifyLoginStatus() {
     return signInController.getAuthStatus();
+  }
+
+  // Logout
+
+  void reset(BuildContext context) {
+    // reset controllers
+    signInController.reset();
+    youtubeDataController.reset();
+
+    // reset states
+    subscriptions.clear();
+    displayedSubscriptions.reset();
+    _trackedChannels.clear();
+    liveStreams.clear();
+    displayedLiveStreams.reset();
+    upcomingStreams.clear();
+    displayedUpcomingStreams.reset();
+
+    // reset pages
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => StreamScheduler()), (route) => false);
   }
 
   // Subscriptions

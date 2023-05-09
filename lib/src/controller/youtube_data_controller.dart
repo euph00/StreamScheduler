@@ -9,7 +9,7 @@ import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sig
 class YoutubeDataController {
   YouTubeApi? youTubeApi;
   SignInController? signInController;
-  late final String _id;
+  late String? _id;
   static final YoutubeDataController _singletonInstance =
       YoutubeDataController._internal();
   final Map<String, Channel> channelCache = HashMap();
@@ -21,6 +21,12 @@ class YoutubeDataController {
     return _singletonInstance;
   }
   YoutubeDataController._internal();
+
+  void reset() {
+    youTubeApi = null;
+    _id = null;
+    channelCache.clear();
+  }
 
   void initialiseYoutubeApi(SignInController signInController) async {
     var httpClient =

@@ -6,6 +6,7 @@ import 'pages/subscriptions_page.dart';
 import 'model/shared_app_state.dart';
 import 'pages/upcoming_page.dart';
 import 'pages/live_page.dart';
+import '../main.dart';
 
 class MainApplication extends StatefulWidget {
   const MainApplication({super.key, required this.title});
@@ -42,19 +43,19 @@ class _MainApplicationState extends State<MainApplication> {
       );
     }
 
-    Widget _page;
+    Widget page;
     switch (_selectedIndex) {
       case 0:
-        _page = HomePage();
+        page = const HomePage();
         break;
       case 1:
-        _page = SubscriptionsPage();
+        page = const SubscriptionsPage();
         break;
       case 2:
-        _page = UpcomingPage();
+        page = const UpcomingPage();
         break;
       case 3:
-        _page = LivePage();
+        page = const LivePage();
         break;
       default:
         throw UnimplementedError('no widget for $_selectedIndex');
@@ -69,6 +70,16 @@ class _MainApplicationState extends State<MainApplication> {
             icon: const Icon(Icons.menu),
             onPressed: _toggleNavigationBar,
           ),
+          actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  sharedState.reset(context);
+                },
+                icon: Icon(
+                  Icons.logout,
+                  color: theme.colorScheme.background,
+                ))
+          ],
         ),
         body: Center(
           child: Row(
@@ -140,7 +151,7 @@ class _MainApplicationState extends State<MainApplication> {
               ),
               Expanded(
                 child: Container(
-                  child: _page,
+                  child: page,
                 ),
               ),
             ],

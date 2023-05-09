@@ -2,6 +2,11 @@ import 'package:mobx/mobx.dart';
 
 class FilteredSortedObservableList<T> extends ObservableList<T> {
   FilteredSortedObservableList();
+  static final Comparator defaultComparator =
+      (a, b) => 0; // default comparator: unsorted, all elements equal
+  static bool defaultFilter(element) {
+    return true;
+  } // default filter: lets everything through
 
   factory FilteredSortedObservableList.withComparator(Comparator comp) {
     FilteredSortedObservableList<T> lst = FilteredSortedObservableList<T>();
@@ -9,10 +14,14 @@ class FilteredSortedObservableList<T> extends ObservableList<T> {
     return lst;
   }
 
-  Comparator<T> comparator =
-      (a, b) => 0; // default comparator: unsorted, all elements equal
-  bool Function(T) filter =
-      (element) => true; // default filter: lets everything through
+  Comparator<T> comparator = defaultComparator;
+  bool Function(T) filter = defaultFilter;
+
+  void reset() {
+    super.clear();
+    this.comparator = defaultComparator;
+    this.filter = defaultFilter;
+  }
 
   void setComparator(Comparator<T> comparator) {
     this.comparator = comparator;

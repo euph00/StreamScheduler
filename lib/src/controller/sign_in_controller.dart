@@ -26,6 +26,12 @@ class SignInController {
   }
   SignInController._internal();
 
+  void reset() {
+    _currentUser = null;
+    _isAuthorized = false;
+    _googleSignIn.signOut();
+  }
+
   // Returns true iff user is signed in AND authorised
   Future<bool> _handleCreds() async {
     var account = _googleSignIn.currentUser;
