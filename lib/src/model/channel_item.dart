@@ -26,7 +26,6 @@ class ChannelItem {
 
   @override
   bool operator ==(Object other) {
-    return other is ChannelItem &&
-      other.getChannelId() == getChannelId();
+    return other is ChannelItem && other.getChannelId() == getChannelId();
   }
 }

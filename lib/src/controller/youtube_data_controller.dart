@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:googleapis/youtube/v3.dart';
@@ -11,6 +12,7 @@ class YoutubeDataController {
   late final String _id;
   static final YoutubeDataController _singletonInstance =
       YoutubeDataController._internal();
+  final Map<String, Channel> channelCache = HashMap();
 
   static const int maxQueryBatchSize = 50;
   static const int perChannelQueryDepth = 20;
@@ -56,9 +58,26 @@ class YoutubeDataController {
   }
 
   Future<List<Channel>> getChannelListFromIds(List<String> ids) async {
-    return (await youTubeApi!.channels
-            .list(['snippet', 'contentDetails'], id: ids))
-        .items!;
+    List<String> queryList = <String>[];
+    List<Channel> resultList = <Channel>[];
+    for (String id in ids) {
+      if (channelCache.containsKey(id)) {
+        resultList.add(channelCache[id]!);
+      } else {
+        queryList.add(id);
+      }
+    }
+    print(queryList.length);
+    if (queryList.isNotEmpty) {
+      List<Channel> response = (await youTubeApi!.channels
+              .list(['snippet', 'contentDetails'], id: queryList))
+          .items!;
+      for (Channel ch in response) {
+        channelCache[ch.id!] = ch;
+        resultList.add(ch);
+      }
+    }
+    return resultList;
   }
 
   Future<List<PlaylistItem>> getChannelUploadsPlaylistItems(

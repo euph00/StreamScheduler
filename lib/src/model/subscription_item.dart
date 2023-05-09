@@ -42,7 +42,6 @@ class SubscriptionItem {
 
   @override
   bool operator ==(Object other) {
-    return other is SubscriptionItem &&
-      other.getChannelId() == getChannelId();
+    return other is SubscriptionItem && other.getChannelId() == getChannelId();
   }
 }
