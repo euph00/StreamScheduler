@@ -69,7 +69,9 @@ class YoutubeDataController {
     }
     print(queryList.length);
     if (queryList.isNotEmpty) {
-      List<Channel> response = (await youTubeApi!.channels.list(['snippet', 'contentDetails'], id: queryList)).items!;
+      List<Channel> response = (await youTubeApi!.channels
+              .list(['snippet', 'contentDetails'], id: queryList))
+          .items!;
       for (Channel ch in response) {
         channelCache[ch.id!] = ch;
         resultList.add(ch);
