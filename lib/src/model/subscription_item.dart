@@ -36,4 +36,13 @@ class SubscriptionItem {
       throw Exception("Could not launch $url");
     }
   }
+
+  @override
+  int get hashCode => getChannelId().hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return other is SubscriptionItem &&
+      other.getChannelId() == getChannelId();
+  }
 }
