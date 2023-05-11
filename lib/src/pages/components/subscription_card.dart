@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../model/subscription_item.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
+import '../../model/shared_app_state.dart';
 
 class SubscriptionCard extends StatefulWidget {
   const SubscriptionCard({
@@ -22,6 +24,8 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     final style = theme.textTheme.bodyLarge!.copyWith(
       color: Colors.black,
     );
+    var sharedState = context.watch<SharedAppState>();
+
 
     return GestureDetector(
       onDoubleTap: () => widget.subscription.launchChannelUrl(),
@@ -48,8 +52,10 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                     Checkbox(
                         value: widget.subscription.isChecked,
                         onChanged: (checkStatus) {
-                          setState(() =>
-                              {widget.subscription.setCheck(checkStatus!)});
+                          setState(() {
+                            widget.subscription.setCheck(checkStatus!);
+                            sharedState.updateTrackedChannels();
+                            });
                         }),
                     Flexible(
                       child: AutoSizeText(

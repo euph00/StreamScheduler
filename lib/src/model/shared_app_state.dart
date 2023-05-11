@@ -9,10 +9,13 @@ import 'video_item.dart';
 import 'broadcast_item.dart';
 import 'filtered_sorted_observable_list.dart';
 import '../../main.dart';
+import '../controller/storage_controller.dart';
 
 class SharedAppState extends ChangeNotifier {
+  bool _trackedChannelsNeedsInit = true;
   final SignInController signInController = SignInController();
   final YoutubeDataController youtubeDataController = YoutubeDataController();
+  final StorageController storageController = StorageController();
   final Set<SubscriptionItem> subscriptions = HashSet<SubscriptionItem>();
   final FilteredSortedObservableList<SubscriptionItem> displayedSubscriptions =
       FilteredSortedObservableList<SubscriptionItem>();
@@ -46,6 +49,7 @@ class SharedAppState extends ChangeNotifier {
     // reset controllers
     signInController.reset();
     youtubeDataController.reset();
+    _trackedChannelsNeedsInit = true;
 
     // reset states
     subscriptions.clear();
@@ -58,7 +62,7 @@ class SharedAppState extends ChangeNotifier {
 
     // reset pages
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => StreamScheduler()), (route) => false);
+        MaterialPageRoute(builder: (_) => const StreamScheduler()), (route) => false);
   }
 
   // Subscriptions
@@ -74,6 +78,24 @@ class SharedAppState extends ChangeNotifier {
     for (SubscriptionItem item in subscriptions.toList()) {
       if (!freshDataSet.contains(item)) subscriptions.remove(item);
     }
+    if (_trackedChannelsNeedsInit) {
+      _initTrackedChannels();
+      _trackedChannelsNeedsInit = false;
+    }
+    displayedSubscriptions.clear();
+    displayedSubscriptions.addAll(subscriptions);
+  }
+
+  void _initTrackedChannels() async {
+    Set<String> savedTrackedChannelIds = await storageController.retrieveTrackedChannels();
+    List<String> newSavedTrackedChannelIds = <String>[];
+    for (SubscriptionItem item in subscriptions) {
+      if (savedTrackedChannelIds.contains(item.getChannelId())) {
+        item.setCheck(true);
+        newSavedTrackedChannelIds.add(item.getChannelId());
+      }
+    }
+    storageController.saveTrackedChannelsById(newSavedTrackedChannelIds);
     displayedSubscriptions.clear();
     displayedSubscriptions.addAll(subscriptions);
   }
@@ -86,12 +108,13 @@ class SharedAppState extends ChangeNotifier {
         .where((item) => item.isChecked)
         .map((item) => item.getChannelId())
         .toList();
-    if (ids.isEmpty) return updateVideoLists(); //break, do not call api
-    _trackedChannels.addAll(
-        (await youtubeDataController.getChannelListFromIds(ids))
-            .map((e) => ChannelItem(ch: e)));
+    if (ids.isNotEmpty) {
+      _trackedChannels.addAll(
+          (await youtubeDataController.getChannelListFromIds(ids))
+              .map((e) => ChannelItem(ch: e)));
+    }
     print(_trackedChannels.map((e) => e.getChannelTitle()));
-    updateVideoLists();
+    storageController.saveTrackedChannels(_trackedChannels);
   }
 
   // Video resources

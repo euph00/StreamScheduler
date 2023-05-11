@@ -157,20 +157,6 @@ class _MainApplicationState extends State<MainApplication> {
             ],
           ),
         ),
-        // floatingActionButton: Row(
-
-        //   children: [
-        //     FloatingActionButton(
-
-        //       onPressed: () {
-        //         sharedState.updateSubscriptions();
-        //       },
-        //       tooltip: 'placeholder',
-        //       child: const Icon(Icons.refresh),
-        //     ),
-        //   ],
-        // ),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       );
     });
   }
