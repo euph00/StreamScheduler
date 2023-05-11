@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:mobx/mobx.dart';
 import '../controller/sign_in_controller.dart';
 import '../controller/youtube_data_controller.dart';
 import 'subscription_item.dart';
@@ -9,10 +10,14 @@ import 'video_item.dart';
 import 'broadcast_item.dart';
 import 'filtered_sorted_observable_list.dart';
 import '../../main.dart';
+import '../controller/storage_controller.dart';
 
 class SharedAppState extends ChangeNotifier {
+  bool isColdBoot = true;
+  bool _trackedChannelsNeedsInit = true;
   final SignInController signInController = SignInController();
   final YoutubeDataController youtubeDataController = YoutubeDataController();
+  final StorageController storageController = StorageController();
   final Set<SubscriptionItem> subscriptions = HashSet<SubscriptionItem>();
   final FilteredSortedObservableList<SubscriptionItem> displayedSubscriptions =
       FilteredSortedObservableList<SubscriptionItem>();
@@ -29,6 +34,8 @@ class SharedAppState extends ChangeNotifier {
           .getActualStartTime()
           .compareTo(
               b.getActualStartTime())); // default early to late comparator
+  final FilteredSortedObservableList<BroadcastItem> homePageList =
+      FilteredSortedObservableList();
 
   // Login
 
@@ -46,6 +53,7 @@ class SharedAppState extends ChangeNotifier {
     // reset controllers
     signInController.reset();
     youtubeDataController.reset();
+    _trackedChannelsNeedsInit = true;
 
     // reset states
     subscriptions.clear();
@@ -58,12 +66,13 @@ class SharedAppState extends ChangeNotifier {
 
     // reset pages
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => StreamScheduler()), (route) => false);
+        MaterialPageRoute(builder: (_) => const StreamScheduler()),
+        (route) => false);
   }
 
   // Subscriptions
 
-  void updateSubscriptions() async {
+  Future<void> updateSubscriptions() async {
     Iterable<SubscriptionItem> freshData =
         (await youtubeDataController.getSubscriptions())
             .map((e) => SubscriptionItem(sub: e));
@@ -74,29 +83,49 @@ class SharedAppState extends ChangeNotifier {
     for (SubscriptionItem item in subscriptions.toList()) {
       if (!freshDataSet.contains(item)) subscriptions.remove(item);
     }
+    if (_trackedChannelsNeedsInit) {
+      await _initTrackedChannels();
+      _trackedChannelsNeedsInit = false;
+    }
+    displayedSubscriptions.clear();
+    displayedSubscriptions.addAll(subscriptions);
+  }
+
+  Future<void> _initTrackedChannels() async {
+    Set<String> savedTrackedChannelIds =
+        await storageController.retrieveTrackedChannels();
+    List<String> newSavedTrackedChannelIds = <String>[];
+    for (SubscriptionItem item in subscriptions) {
+      if (savedTrackedChannelIds.contains(item.getChannelId())) {
+        item.setCheck(true);
+        newSavedTrackedChannelIds.add(item.getChannelId());
+      }
+    }
+    storageController.saveTrackedChannelsById(newSavedTrackedChannelIds);
     displayedSubscriptions.clear();
     displayedSubscriptions.addAll(subscriptions);
   }
 
   // Filtered channels
 
-  void updateTrackedChannels() async {
+  Future<void> updateTrackedChannels() async {
     _trackedChannels.clear();
     List<String> ids = await Stream.fromIterable(subscriptions)
         .where((item) => item.isChecked)
         .map((item) => item.getChannelId())
         .toList();
-    if (ids.isEmpty) return updateVideoLists(); //break, do not call api
-    _trackedChannels.addAll(
-        (await youtubeDataController.getChannelListFromIds(ids))
-            .map((e) => ChannelItem(ch: e)));
+    if (ids.isNotEmpty) {
+      _trackedChannels.addAll(
+          (await youtubeDataController.getChannelListFromIds(ids))
+              .map((e) => ChannelItem(ch: e)));
+    }
     print(_trackedChannels.map((e) => e.getChannelTitle()));
-    updateVideoLists();
+    storageController.saveTrackedChannels(_trackedChannels);
   }
 
   // Video resources
 
-  void updateVideoLists() async {
+  Future<void> updateVideoLists() async {
     liveStreams.clear();
     upcomingStreams.clear();
     List<String> videoIds = <String>[];
@@ -121,6 +150,9 @@ class SharedAppState extends ChangeNotifier {
         .toList());
     displayedUpcomingStreams.clear();
     displayedUpcomingStreams.addAll(upcomingStreams);
+    homePageList.clear();
+    homePageList.addAll(liveStreams);
+    homePageList.addAll(upcomingStreams);
 
     print("__________________________LIVE__________________________");
     for (BroadcastItem item in liveStreams) {

@@ -24,7 +24,7 @@ class LivePage extends StatelessWidget {
             const SizedBox(width: 5),
             ElevatedButton(
                 onPressed: () {
-                  sharedState.updateTrackedChannels();
+                  sharedState.updateVideoLists();
                 },
                 child: const Text("refresh")),
             const SizedBox(width: 5),

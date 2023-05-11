@@ -6,22 +6,47 @@ class BroadcastItem extends VideoItem {
   });
 
   DateTime getActualStartTime() {
-    return super.vid.liveStreamingDetails!.actualStartTime!;
+    try {
+      return super.vid.liveStreamingDetails!.actualStartTime!;
+    } on TypeError catch (e) {
+      print(e.toString());
+      return DateTime.now();
+    }
   }
 
   DateTime getActualEndTime() {
-    return super.vid.liveStreamingDetails!.actualEndTime!;
+    try {
+      return super.vid.liveStreamingDetails!.actualEndTime!;
+    } on TypeError catch (e) {
+      print(e.toString());
+      return DateTime.now();
+    }
   }
 
   DateTime getScheduledStartTime() {
-    return super.vid.liveStreamingDetails!.scheduledStartTime!;
+    try {
+      return super.vid.liveStreamingDetails!.scheduledStartTime!;
+    } on TypeError catch (e) {
+      print(e.toString());
+      return DateTime.now();
+    }
   }
 
   DateTime getScheduledEndTime() {
-    return super.vid.liveStreamingDetails!.scheduledEndTime!;
+    try {
+      return super.vid.liveStreamingDetails!.scheduledEndTime!;
+    } on TypeError catch (e) {
+      print(e.toString());
+      return DateTime.now();
+    }
   }
 
   String getConcurrentViewers() {
-    return super.vid.liveStreamingDetails!.concurrentViewers!;
+    try {
+      return super.vid.liveStreamingDetails!.concurrentViewers!;
+    } on TypeError catch (e) {
+      print(e.toString());
+      return "No live viewership data";
+    }
   }
 }
