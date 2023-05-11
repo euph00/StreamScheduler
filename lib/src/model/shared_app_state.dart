@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:mobx/mobx.dart';
 import '../controller/sign_in_controller.dart';
 import '../controller/youtube_data_controller.dart';
 import 'subscription_item.dart';
@@ -12,6 +13,7 @@ import '../../main.dart';
 import '../controller/storage_controller.dart';
 
 class SharedAppState extends ChangeNotifier {
+  bool isColdBoot = true;
   bool _trackedChannelsNeedsInit = true;
   final SignInController signInController = SignInController();
   final YoutubeDataController youtubeDataController = YoutubeDataController();
@@ -32,6 +34,8 @@ class SharedAppState extends ChangeNotifier {
           .getActualStartTime()
           .compareTo(
               b.getActualStartTime())); // default early to late comparator
+  final FilteredSortedObservableList<BroadcastItem> homePageList =
+      FilteredSortedObservableList();
 
   // Login
 
@@ -62,12 +66,13 @@ class SharedAppState extends ChangeNotifier {
 
     // reset pages
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const StreamScheduler()), (route) => false);
+        MaterialPageRoute(builder: (_) => const StreamScheduler()),
+        (route) => false);
   }
 
   // Subscriptions
 
-  void updateSubscriptions() async {
+  Future<void> updateSubscriptions() async {
     Iterable<SubscriptionItem> freshData =
         (await youtubeDataController.getSubscriptions())
             .map((e) => SubscriptionItem(sub: e));
@@ -79,15 +84,16 @@ class SharedAppState extends ChangeNotifier {
       if (!freshDataSet.contains(item)) subscriptions.remove(item);
     }
     if (_trackedChannelsNeedsInit) {
-      _initTrackedChannels();
+      await _initTrackedChannels();
       _trackedChannelsNeedsInit = false;
     }
     displayedSubscriptions.clear();
     displayedSubscriptions.addAll(subscriptions);
   }
 
-  void _initTrackedChannels() async {
-    Set<String> savedTrackedChannelIds = await storageController.retrieveTrackedChannels();
+  Future<void> _initTrackedChannels() async {
+    Set<String> savedTrackedChannelIds =
+        await storageController.retrieveTrackedChannels();
     List<String> newSavedTrackedChannelIds = <String>[];
     for (SubscriptionItem item in subscriptions) {
       if (savedTrackedChannelIds.contains(item.getChannelId())) {
@@ -102,7 +108,7 @@ class SharedAppState extends ChangeNotifier {
 
   // Filtered channels
 
-  void updateTrackedChannels() async {
+  Future<void> updateTrackedChannels() async {
     _trackedChannels.clear();
     List<String> ids = await Stream.fromIterable(subscriptions)
         .where((item) => item.isChecked)
@@ -119,7 +125,7 @@ class SharedAppState extends ChangeNotifier {
 
   // Video resources
 
-  void updateVideoLists() async {
+  Future<void> updateVideoLists() async {
     liveStreams.clear();
     upcomingStreams.clear();
     List<String> videoIds = <String>[];
@@ -144,6 +150,9 @@ class SharedAppState extends ChangeNotifier {
         .toList());
     displayedUpcomingStreams.clear();
     displayedUpcomingStreams.addAll(upcomingStreams);
+    homePageList.clear();
+    homePageList.addAll(liveStreams);
+    homePageList.addAll(upcomingStreams);
 
     print("__________________________LIVE__________________________");
     for (BroadcastItem item in liveStreams) {

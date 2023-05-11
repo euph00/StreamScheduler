@@ -6,7 +6,8 @@ import '../model/channel_item.dart';
 class StorageController {
   void saveTrackedChannels(Iterable<ChannelItem> trackedChannels) async {
     final SharedPreferences storage = await SharedPreferences.getInstance();
-    await storage.setStringList('trackedChannels', trackedChannels.map((e) => e.getChannelId()).toList());
+    await storage.setStringList('trackedChannels',
+        trackedChannels.map((e) => e.getChannelId()).toList());
   }
 
   void saveTrackedChannelsById(Iterable<String> trackedChannels) async {

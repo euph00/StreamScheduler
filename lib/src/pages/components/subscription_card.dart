@@ -26,7 +26,6 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     );
     var sharedState = context.watch<SharedAppState>();
 
-
     return GestureDetector(
       onDoubleTap: () => widget.subscription.launchChannelUrl(),
       child: Card(
@@ -55,7 +54,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                           setState(() {
                             widget.subscription.setCheck(checkStatus!);
                             sharedState.updateTrackedChannels();
-                            });
+                          });
                         }),
                     Flexible(
                       child: AutoSizeText(

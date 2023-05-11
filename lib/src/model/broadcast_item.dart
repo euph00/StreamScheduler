@@ -48,6 +48,5 @@ class BroadcastItem extends VideoItem {
       print(e.toString());
       return "No live viewership data";
     }
-    
   }
 }
