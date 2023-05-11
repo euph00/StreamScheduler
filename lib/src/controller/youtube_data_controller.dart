@@ -15,7 +15,7 @@ class YoutubeDataController {
   final Map<String, Channel> channelCache = HashMap();
 
   static const int maxQueryBatchSize = 50;
-  static const int perChannelQueryDepth = 20;
+  static const int perChannelQueryDepth = 8;
 
   factory YoutubeDataController() {
     return _singletonInstance;
