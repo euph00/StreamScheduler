@@ -10,14 +10,16 @@ class LiveCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final bodyStyle = theme.textTheme.bodyLarge!.copyWith(
-      color: Colors.black,
+      color: Colors.white,
     );
 
     Duration liveFor =
         DateTime.now().difference(broadcastItem.getActualStartTime().toLocal());
     int liveForH = liveFor.inHours;
     int liveForM = liveFor.inMinutes % 60;
-    String liveForHM = "$liveForH Hours, $liveForM minutes";
+    String liveForHM = liveForH > 0
+        ? "$liveForH Hours, $liveForM minutes"
+        : "$liveForM minutes";
 
     return GestureDetector(
       onDoubleTap: () => broadcastItem.launchVideoUrl(),
@@ -25,17 +27,25 @@ class LiveCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
               side: const BorderSide(
-                color: Colors.black,
+                color: Colors.grey,
               )),
-          color: Colors.white,
+          color: theme.colorScheme.onBackground,
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: Row(
               children: [
                 Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                  broadcastItem.getThumbnailUrl(),
-                )),
+                      broadcastItem.getThumbnailUrl(),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
                 Flexible(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -55,7 +65,7 @@ class LiveCard extends StatelessWidget {
                       ),
                       const Divider(),
                       AutoSizeText(
-                        'Started at: ${broadcastItem.getActualStartTime().toLocal()}',
+                        'Started: ${broadcastItem.getActualStartTime().toLocal()}',
                         style: bodyStyle,
                         maxLines: 1,
                         minFontSize: 10,
@@ -74,6 +84,9 @@ class LiveCard extends StatelessWidget {
                       )
                     ],
                   ),
+                ),
+                const SizedBox(
+                  width: 5,
                 ),
               ],
             ),

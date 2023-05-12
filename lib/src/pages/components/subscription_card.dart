@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../model/subscription_item.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import '../../model/shared_app_state.dart';
 
@@ -22,7 +21,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final style = theme.textTheme.bodyLarge!.copyWith(
-      color: Colors.black,
+      color: Colors.white,
     );
     var sharedState = context.watch<SharedAppState>();
 
@@ -32,17 +31,22 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
               side: const BorderSide(
-                color: Colors.black,
+                color: Colors.grey,
               )),
-          color: Colors.white,
+          color: theme.colorScheme.onBackground,
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: Column(
               children: [
                 Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                  widget.subscription.getThumbnailUrl(),
-                )),
+                      widget.subscription.getThumbnailUrl(),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 const SizedBox(
                   height: 10,
                 ),
