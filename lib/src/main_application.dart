@@ -64,10 +64,16 @@ class _MainApplicationState extends State<MainApplication> {
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: theme.colorScheme.primaryContainer,
-          title: Text(widget.title),
+          backgroundColor: theme.colorScheme.onBackground,
+          title: Text(
+            widget.title,
+            style: const TextStyle(color: Colors.white),
+          ),
           leading: IconButton(
-            icon: const Icon(Icons.menu),
+            icon: const Icon(
+              Icons.menu,
+              color: Colors.white,
+            ),
             onPressed: _toggleNavigationBar,
           ),
           actions: <Widget>[

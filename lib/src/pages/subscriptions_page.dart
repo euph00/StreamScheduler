@@ -4,6 +4,7 @@ import 'package:streamscheduler/src/model/subscription_item.dart';
 import '../model/shared_app_state.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'components/subscription_card.dart';
+import 'components/refresh_button.dart';
 
 class SubscriptionsPage extends StatelessWidget {
   const SubscriptionsPage({super.key});
@@ -13,59 +14,59 @@ class SubscriptionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var sharedState = context.watch<SharedAppState>();
     double screenWidth = MediaQuery.of(context).size.width;
+    final theme = Theme.of(context);
 
-    return Column(
-      children: [
-        const SizedBox(
-          height: 10,
-        ),
-        Row(
-          children: [
-            const SizedBox(
-              width: 5,
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  sharedState.updateSubscriptions();
-                },
-                child: Text("refresh")),
-            const SizedBox(width: 5),
-            const _SortingDropdownButton(),
-            const SizedBox(width: 5),
-            const _FilteringDropdownButton(),
-            const SizedBox(width: 5),
-            _SearchTextField(),
-            const SizedBox(
-              width: 5,
-            )
-          ],
-        ),
-        Observer(
-            builder: (_) => Text(
-                "no. entries: ${sharedState.displayedSubscriptions.length}")),
-        Expanded(
-          child: Row(
+    return Container(
+      color: theme.colorScheme.onBackground,
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
             children: [
-              Expanded(
-                  child: Observer(
-                builder: (_) => GridView.builder(
-                  itemCount: sharedState.displayedSubscriptions.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount:
-                          (screenWidth / logicalPixelWidthPerCard).ceil(),
-                      crossAxisSpacing: 4.0,
-                      mainAxisSpacing: 8.0),
-                  itemBuilder: (context, index) {
-                    return SubscriptionCard(
-                        subscription:
-                            sharedState.displayedSubscriptions[index]);
-                  },
-                ),
-              )),
+              const SizedBox(
+                width: 5,
+              ),
+              RefreshButton(sharedState: sharedState),
+              const SizedBox(width: 10),
+              const _SortingDropdownButton(),
+              const SizedBox(width: 10),
+              const _FilteringDropdownButton(),
+              const SizedBox(width: 5),
+              _SearchTextField(),
+              const SizedBox(
+                width: 5,
+              )
             ],
           ),
-        ),
-      ],
+          Observer(
+              builder: (_) => Text(
+                  "no. entries: ${sharedState.displayedSubscriptions.length}")),
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                    child: Observer(
+                  builder: (_) => GridView.builder(
+                    itemCount: sharedState.displayedSubscriptions.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount:
+                            (screenWidth / logicalPixelWidthPerCard).ceil(),
+                        crossAxisSpacing: 4.0,
+                        mainAxisSpacing: 8.0),
+                    itemBuilder: (context, index) {
+                      return SubscriptionCard(
+                          subscription:
+                              sharedState.displayedSubscriptions[index]);
+                    },
+                  ),
+                )),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -90,7 +91,10 @@ class __SortingDropdownButtonState extends State<_SortingDropdownButton> {
   @override
   Widget build(BuildContext context) {
     var sharedState = context.watch<SharedAppState>();
+    final theme = Theme.of(context);
+
     return DropdownButton<String>(
+      dropdownColor: theme.colorScheme.onBackground,
       value: sortingDropdownValue,
       onChanged: (String? value) {
         switch (value) {
@@ -117,7 +121,10 @@ class __SortingDropdownButtonState extends State<_SortingDropdownButton> {
       items: _sortingOptions.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
-          child: Text(value),
+          child: Text(
+            value,
+            style: const TextStyle(color: Colors.white),
+          ),
         );
       }).toList(),
     );
@@ -145,8 +152,10 @@ class __FilteringDropdownButtonState extends State<_FilteringDropdownButton> {
   @override
   Widget build(BuildContext context) {
     var sharedState = context.watch<SharedAppState>();
+    final theme = Theme.of(context);
 
     return DropdownButton<String>(
+      dropdownColor: theme.colorScheme.onBackground,
       value: filteringDropdownValue,
       onChanged: (String? value) {
         switch (value) {
@@ -182,7 +191,10 @@ class __FilteringDropdownButtonState extends State<_FilteringDropdownButton> {
       items: _filterOptions.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
-          child: Text(value),
+          child: Text(
+            value,
+            style: const TextStyle(color: Colors.white),
+          ),
         );
       }).toList(),
     );
@@ -227,6 +239,7 @@ class __SearchTextFieldState extends State<_SearchTextField> {
 
     return Expanded(
       child: TextField(
+        style: const TextStyle(color: Colors.white),
         controller: _controller,
         onSubmitted: (value) {
           filterForName(value);
@@ -242,6 +255,8 @@ class __SearchTextFieldState extends State<_SearchTextField> {
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           labelText: _SearchTextField.prompt,
+          labelStyle: TextStyle(color: Colors.white),
+          hintStyle: TextStyle(color: Colors.white),
         ),
       ),
     );
