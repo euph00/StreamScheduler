@@ -150,7 +150,7 @@ Double clicking on a particular event's box on this page will open a new tab tha
 
 # How to use: Upcoming page<a name='how-to-use-upcoming-page'></a>
 
-![Upcomingpage]()
+![Upcomingpage](images/upcomingpage.png)
 Sample upcoming page layout
 
 ## Features
