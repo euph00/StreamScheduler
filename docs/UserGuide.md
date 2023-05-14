@@ -7,49 +7,6 @@ This is where SteamScheduler comes in. StreamScheduler is a management app for y
 ![SignInScreen](images/signinpage.png)
 
 ---
-# Table of contents<a name='table-of-contents'></a>
-- [What is StreamScheduler?](#what-is-streamscheduler)
-- [Table of contents](#table-of-contents)
-- [Using this guide](#using-this-guide)
-  - [Some symbols you may encounter in this guide](#some-symbols-you-may-encounter-in-this-guide)
-- [Quick Start](#quick-start)
-- [How to use: Subscriptions page](#how-to-use-subscriptions-page)
-  - [Features](#features)
-    - [**List subscriptions**](#list-subscriptions)
-    - [**Add/Remove subscriptions from being tracked**](#addremove-subscriptions-from-being-tracked)
-    - [**Sort subscriptons**](#sort-subscriptons)
-    - [**Filter subscriptions**](#filter-subscriptions)
-    - [**Search by channel name**](#search-by-channel-name)
-    - [**Double click to open channel page**](#double-click-to-open-channel-page)
-- [How to use: Home page](#how-to-use-home-page)
-  - [Features](#features-1)
-    - [**Display activity summary**](#display-activity-summary)
-    - [**Refresh**](#refresh)
-    - [**Double click to open stream page**](#double-click-to-open-stream-page)
-- [How to use: Upcoming page](#how-to-use-upcoming-page)
-  - [Features](#features-2)
-    - [**List upcoming streams**](#list-upcoming-streams)
-    - [**Refresh**](#refresh-1)
-    - [**Sort upcoming streams**](#sort-upcoming-streams)
-    - [**Search for upcoming streams by channel name**](#search-for-upcoming-streams-by-channel-name)
-    - [**Double click to open stream page**](#double-click-to-open-stream-page-1)
-- [How to use: Live page](#how-to-use-live-page)
-  - [Features](#features-3)
-    - [**List live streams**](#list-live-streams)
-    - [**Refresh**](#refresh-2)
-    - [**Sort live streams**](#sort-live-streams)
-    - [**Search for live streams by channel name**](#search-for-live-streams-by-channel-name)
-    - [**Double click to open stream page**](#double-click-to-open-stream-page-2)
-- [General features](#general-features)
-  - [Signing out](#signing-out)
-  - [Saving your data](#saving-your-data)
-- [Appendix](#appendix)
-  - [Known issues](#known-issues)
-    - [**Filter/Sort/Search conditions not saving properly**](#filtersortsearch-conditions-not-saving-properly)
-    - [**Login status times out silently**](#login-status-times-out-silently)
-    - [**Sign in button not responsive**](#sign-in-button-not-responsive)
-
----
 
 # Using this guide<a name='using-this-guide-'></a>
 
@@ -90,7 +47,7 @@ This guide will draw your attention to certain noteworthy points using symbols, 
 
 <div markdown="block" class="alert alert-info">
 
-:warning: **If sign-in button appears unresponsive, please refer to [this known issue](#sign-in-button-not-responsive).
+:warning: **If sign-in button appears unresponsive, please refer to [this known issue](#sign-in-button-not-responsive).**
 
 :information_source: **Platform support**
 * Threre are no plans to support a macOS/Windows app. Please use the webapp on these platforms.
