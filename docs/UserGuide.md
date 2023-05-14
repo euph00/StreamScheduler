@@ -50,7 +50,7 @@ This guide will draw your attention to certain noteworthy points using symbols, 
 :warning: **If sign-in button appears unresponsive, please refer to [this known issue](#sign-in-button-not-responsive).**
 
 :information_source: **Platform support**
-* Threre are no plans to support a macOS/Windows app. Please use the webapp on these platforms.
+* There are no plans to support a macOS/Windows app. Please use the webapp on these platforms.
 * Support for Android and iOS will be coming soon.
 * Do use the webapp on tablets.
 

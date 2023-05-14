@@ -80,9 +80,9 @@ class _SortingDropdownButton extends StatefulWidget {
   static Comparator<BroadcastItem> zToAcomparator =
       (a, b) => -(a.getChannelTitle().compareTo(b.getChannelTitle()));
   static Comparator<BroadcastItem> earlyToLateComparator =
-      (a, b) => a.getActualStartTime().compareTo(b.getActualStartTime());
+      (a, b) => a.getScheduledStartTime().compareTo(b.getScheduledStartTime());
   static Comparator<BroadcastItem> lateToEarlyComparator =
-      (a, b) => -(a.getActualStartTime().compareTo(b.getActualStartTime()));
+      (a, b) => -(a.getScheduledStartTime().compareTo(b.getScheduledStartTime()));
 
   @override
   State<_SortingDropdownButton> createState() => __SortingDropdownButtonState();

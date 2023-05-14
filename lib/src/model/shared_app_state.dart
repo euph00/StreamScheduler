@@ -30,9 +30,9 @@ class SharedAppState extends ChangeNotifier {
   final List<BroadcastItem> upcomingStreams = <BroadcastItem>[];
   final FilteredSortedObservableList<BroadcastItem> displayedUpcomingStreams =
       FilteredSortedObservableList<BroadcastItem>.withComparator((a, b) => a
-          .getActualStartTime()
+          .getScheduledStartTime()
           .compareTo(
-              b.getActualStartTime())); // default early to late comparator
+              b.getScheduledStartTime())); // default early to late comparator
   final FilteredSortedObservableList<BroadcastItem> homePageList =
       FilteredSortedObservableList();
 
