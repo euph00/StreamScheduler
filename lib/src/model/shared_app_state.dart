@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:mobx/mobx.dart';
 import '../controller/sign_in_controller.dart';
 import '../controller/youtube_data_controller.dart';
 import 'subscription_item.dart';
