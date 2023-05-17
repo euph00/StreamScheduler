@@ -45,6 +45,9 @@ class YoutubeDataController {
     if (signInController == null) {
       print('NOT SIGNED IN');
     }
+    if (signInController != null && !(await signInController!.isSignedIn())) { // not signed in
+      signInController!.login();
+    }
     var subs = <Subscription>[];
     var response = (await youTubeApi!.subscriptions.list(
         ['snippet', 'contentDetails'],
