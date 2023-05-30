@@ -30,15 +30,15 @@ class LivePage extends StatelessWidget {
               const SizedBox(width: 10),
               const _SortingDropdownButton(),
               const SizedBox(width: 10),
+            ],
+          ),
+          Row(
+            children: [
               _SearchTextField(),
               const SizedBox(width: 5),
             ],
           ),
-          Observer(
-              builder: (_) => Text(
-                    "____________________LIVE: ${sharedState.displayedLiveStreams.length}____________________",
-                    style: const TextStyle(color: Colors.white),
-                  )),
+          
           Expanded(
             child: Row(
               children: [

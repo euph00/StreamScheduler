@@ -34,12 +34,19 @@ class SubscriptionsPage extends StatelessWidget {
               const SizedBox(width: 10),
               const _FilteringDropdownButton(),
               const SizedBox(width: 5),
-              _SearchTextField(),
-              const SizedBox(
-                width: 5,
-              )
+              
             ],
           ),
+
+          Row(
+            children: [
+              _SearchTextField(),
+              const SizedBox(
+            width: 5,
+          ),
+            ],
+          ),
+          
           Observer(
               builder: (_) => Text(
                   "no. entries: ${sharedState.displayedSubscriptions.length}")),
